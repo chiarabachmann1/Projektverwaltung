@@ -10,6 +10,8 @@ app.use(express.json());
 const projektRoutes = require("./routes/projekte");
 app.use("/api/projekte", projektRoutes);
 
+const mitarbeitendeRoutes = require("./routes/mitarbeitende");
+app.use("/api/mitarbeitende", mitarbeitendeRoutes);
 
 app.get("/", (req, res) => {
     res.send("Projektverwaltung API läuft!");

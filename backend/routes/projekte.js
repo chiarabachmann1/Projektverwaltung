@@ -23,16 +23,7 @@ router.get("/:projektId", async (req, res) => {
     const { projektId } = req.params;
     try {
         const [rows] = await pool.query(`
-            SELECT 
-                p.projektId, 
-                CONCAT('PRJ-', p.projektId) AS projektreferenz, 
-                p.titel, 
-                p.beschreibung, 
-                p.bewilligungsdatum, 
-                p.startGeplant, 
-                p.endGeplant, 
-                p.projektleiter, 
-                v.name AS vorgehensmodell
+            SELECT *
             FROM PROJEKT p
             LEFT JOIN VORGEHENSMODELL v ON p.vorgehensmodellId = v.vorgehensmodellId
             WHERE p.projektId = ?

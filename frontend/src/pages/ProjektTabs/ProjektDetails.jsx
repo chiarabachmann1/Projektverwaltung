@@ -3,20 +3,22 @@ import axios from "axios";
 
 function Projektdetails({ projekt }) {
     const [editableProjekt, setEditableProjekt] = useState(projekt);
+    const [isSaved, setIsSaved] = useState(false);
 
-    const handleChange = async (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        const updatedProjekt = { ...editableProjekt, [name]: value };
+        setEditableProjekt({ ...editableProjekt, [name]: value });
+        setIsSaved(false); // Speichern-Button aktivieren
+    };
 
-        setEditableProjekt(updatedProjekt); // UI sofort aktualisieren
-
+    const handleSave = async () => {
         try {
-            await axios.patch(`http://localhost:5000/api/projekte/${projekt.projektId}`, {
-                [name]: value
-            });
-            console.log("Projekt aktualisiert:", name, value);
+            await axios.patch(`http://localhost:5000/api/projekte/${projekt.projektId}`, editableProjekt);
+            setIsSaved(true);
+            alert("Änderungen erfolgreich gespeichert!");
         } catch (error) {
-            console.error("Fehler beim Aktualisieren des Projekts:", error.response ? error.response.data : error.message);
+            console.error("Fehler beim Speichern:", error.response ? error.response.data : error.message);
+            alert("Fehler beim Speichern!");
         }
     };
 
@@ -53,6 +55,14 @@ function Projektdetails({ projekt }) {
 
             <p><strong>Projektfortschritt (%):</strong>
             <input type="number" name="projektfortschritt" value={editableProjekt.projektfortschritt} min="0" max="100" onChange={handleChange} /></p>
+
+            {/* 🔹 Speichern-Button */}
+            <button 
+                onClick={handleSave} 
+                disabled={isSaved} 
+                style={{ backgroundColor: isSaved ? "gray" : "blue", color: "white", padding: "10px", marginTop: "10px", cursor: isSaved ? "not-allowed" : "pointer" }}>
+                {isSaved ? "Gespeichert ✅" : "Änderungen speichern"}
+            </button>
         </div>
     );
 }
